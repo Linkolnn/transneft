@@ -10,15 +10,21 @@ export function useCanvasChart() {
       padding = 40,
       barColors = ['#0056a4', '#e74c3c', '#27ae60', '#f39c12'],
       title = '',
-      animate = true
+      animate = true,
+      fontSize = 16,
+      valueFontSize = 12,
+      labelFontSize = 12
     } = options;
+    
+    // Adjust padding based on container size
+    const responsivePadding = width < 400 ? 20 : width < 600 ? 30 : padding;
     
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
     
     // Set dimensions
-    const chartWidth = width - padding * 2;
-    const chartHeight = height - padding * 2;
+    const chartWidth = width - responsivePadding * 2;
+    const chartHeight = height - responsivePadding * 2;
     
     // Find max value for scaling
     const maxValue = Math.max(...data.values);
@@ -29,26 +35,29 @@ export function useCanvasChart() {
     // Draw title
     if (title) {
       ctx.fillStyle = '#333';
-      ctx.font = '16px Roboto, sans-serif';
+      ctx.font = `${fontSize}px Roboto, sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText(title, width / 2, padding / 2);
+      ctx.fillText(title, width / 2, responsivePadding / 2);
     }
     
     // Draw axes
     ctx.beginPath();
-    ctx.moveTo(padding, padding);
-    ctx.lineTo(padding, height - padding);
-    ctx.lineTo(width - padding, height - padding);
+    ctx.moveTo(responsivePadding, responsivePadding);
+    ctx.lineTo(responsivePadding, height - responsivePadding);
+    ctx.lineTo(width - responsivePadding, height - responsivePadding);
     ctx.strokeStyle = '#ccc';
     ctx.stroke();
     
     // Draw bars with animation if enabled
     const drawBars = (progress = 1) => {
+      // Calculate spacing between bars based on container width
+      const barSpacing = width < 400 ? 5 : width < 600 ? 8 : 10;
+      
       data.labels.forEach((label, index) => {
         const value = data.values[index];
         const barHeight = (value / maxValue) * chartHeight * progress;
-        const x = padding + index * (barWidth + 10);
-        const y = height - padding - barHeight;
+        const x = responsivePadding + index * (barWidth + barSpacing);
+        const y = height - responsivePadding - barHeight;
         
         // Draw bar
         ctx.fillStyle = barColors[index % barColors.length];
@@ -56,12 +65,13 @@ export function useCanvasChart() {
         
         // Draw value on top of bar
         ctx.fillStyle = '#333';
-        ctx.font = '12px Roboto, sans-serif';
+        ctx.font = `${valueFontSize}px Roboto, sans-serif`;
         ctx.textAlign = 'center';
         ctx.fillText(value, x + barWidth / 2, y - 5);
         
         // Draw label below bar
-        ctx.fillText(label, x + barWidth / 2, height - padding + 15);
+        ctx.font = `${labelFontSize}px Roboto, sans-serif`;
+        ctx.fillText(label, x + barWidth / 2, height - responsivePadding + 15);
       });
     };
     
@@ -79,15 +89,15 @@ export function useCanvasChart() {
         // Redraw title and axes
         if (title) {
           ctx.fillStyle = '#333';
-          ctx.font = '16px Roboto, sans-serif';
+          ctx.font = `${fontSize}px Roboto, sans-serif`;
           ctx.textAlign = 'center';
-          ctx.fillText(title, width / 2, padding / 2);
+          ctx.fillText(title, width / 2, responsivePadding / 2);
         }
         
         ctx.beginPath();
-        ctx.moveTo(padding, padding);
-        ctx.lineTo(padding, height - padding);
-        ctx.lineTo(width - padding, height - padding);
+        ctx.moveTo(responsivePadding, responsivePadding);
+        ctx.lineTo(responsivePadding, height - responsivePadding);
+        ctx.lineTo(width - responsivePadding, height - responsivePadding);
         ctx.strokeStyle = '#ccc';
         ctx.stroke();
         
@@ -116,7 +126,9 @@ export function useCanvasChart() {
       title = '',
       animate = true,
       donut = false,
-      donutWidth = 50
+      donutWidth = 50,
+      fontSize = 16,
+      labelFontSize = 12
     } = options;
     
     // Clear canvas
@@ -133,7 +145,7 @@ export function useCanvasChart() {
     // Draw title
     if (title) {
       ctx.fillStyle = '#333';
-      ctx.font = '16px Roboto, sans-serif';
+      ctx.font = `${fontSize}px Roboto, sans-serif`;
       ctx.textAlign = 'center';
       ctx.fillText(title, centerX, 20);
     }
@@ -166,17 +178,29 @@ export function useCanvasChart() {
         }
         
         // Calculate position for label
-        const labelAngle = startAngle + sliceAngle / 2;
-        const labelRadius = radius + 20;
-        const labelX = centerX + Math.cos(labelAngle) * labelRadius;
-        const labelY = centerY + Math.sin(labelAngle) * labelRadius;
+        const midAngle = startAngle + sliceAngle / 2;
+        const angleSize = sliceAngle / (Math.PI * 2);
         
-        // Draw label and percentage
-        ctx.fillStyle = '#333';
-        ctx.font = '12px Roboto, sans-serif';
-        ctx.textAlign = 'center';
-        const percentage = Math.round((value / total) * 100);
-        ctx.fillText(`${data.labels[index]} (${percentage}%)`, labelX, labelY);
+        // Draw label
+        if (angleSize > 0.2) { // Only draw label if segment is large enough
+          const labelRadius = donut ? radius - donutWidth / 2 : radius / 1.5;
+          const labelX = centerX + Math.cos(midAngle) * labelRadius * progress;
+          const labelY = centerY + Math.sin(midAngle) * labelRadius * progress;
+          
+          ctx.fillStyle = '#fff';
+          ctx.font = `${labelFontSize}px Roboto, sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          
+          // Only show label if segment is visible during animation
+          if (progress > 0.2) {
+            // Adjust text for small screens
+            const displayLabel = width < 400 && data.labels[index].length > 8 
+              ? data.labels[index].substring(0, 7) + '...' 
+              : data.labels[index];
+            ctx.fillText(displayLabel, labelX, labelY);
+          }
+        }
         
         startAngle += sliceAngle;
       });
@@ -196,7 +220,7 @@ export function useCanvasChart() {
         // Redraw title
         if (title) {
           ctx.fillStyle = '#333';
-          ctx.font = '16px Roboto, sans-serif';
+          ctx.font = `${fontSize}px Roboto, sans-serif`;
           ctx.textAlign = 'center';
           ctx.fillText(title, centerX, 20);
         }
@@ -227,15 +251,23 @@ export function useCanvasChart() {
       pointColor = '#e74c3c',
       title = '',
       animate = true,
-      gridLines = true
+      gridLines = true,
+      fontSize = 16,
+      labelFontSize = 10,
+      valueFontSize = 12,
+      pointRadius = 5,
+      lineWidth = 2
     } = options;
+    
+    // Adjust padding based on container size
+    const responsivePadding = width < 400 ? 25 : width < 600 ? 35 : padding;
     
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
     
     // Set dimensions
-    const chartWidth = width - padding * 2;
-    const chartHeight = height - padding * 2;
+    const chartWidth = width - responsivePadding * 2;
+    const chartHeight = height - responsivePadding * 2;
     
     // Find max value for scaling
     const maxValue = Math.max(...data.values);
@@ -246,77 +278,88 @@ export function useCanvasChart() {
     // Draw title
     if (title) {
       ctx.fillStyle = '#333';
-      ctx.font = '16px Roboto, sans-serif';
+      ctx.font = `${fontSize}px Roboto, sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText(title, width / 2, padding / 2);
+      ctx.fillText(title, width / 2, responsivePadding / 2);
     }
     
-    // Draw grid lines
+    // Draw grid or axes
     if (gridLines) {
       const gridCount = 5;
       
       // Horizontal grid lines
       for (let i = 0; i <= gridCount; i++) {
-        const y = padding + (chartHeight / gridCount) * i;
+        const y = responsivePadding + (chartHeight / gridCount) * i;
         
         ctx.beginPath();
-        ctx.moveTo(padding, y);
-        ctx.lineTo(width - padding, y);
+        ctx.moveTo(responsivePadding, y);
+        ctx.lineTo(width - responsivePadding, y);
         ctx.strokeStyle = '#eee';
         ctx.stroke();
         
         // Draw y-axis labels
         const value = Math.round(maxValue - (maxValue / gridCount) * i);
         ctx.fillStyle = '#666';
-        ctx.font = '10px Roboto, sans-serif';
+        ctx.font = `${labelFontSize}px Roboto, sans-serif`;
         ctx.textAlign = 'right';
-        ctx.fillText(value, padding - 5, y + 3);
+        ctx.fillText(value, responsivePadding - 5, y + 3);
       }
       
       // Vertical grid lines
       for (let i = 0; i < data.labels.length; i++) {
-        const x = padding + pointSpacing * i;
+        const x = responsivePadding + pointSpacing * i;
         
         ctx.beginPath();
-        ctx.moveTo(x, padding);
-        ctx.lineTo(x, height - padding);
+        ctx.moveTo(x, responsivePadding);
+        ctx.lineTo(x, height - responsivePadding);
         ctx.strokeStyle = '#eee';
         ctx.stroke();
         
         // Draw x-axis labels
         ctx.fillStyle = '#666';
-        ctx.font = '10px Roboto, sans-serif';
+        ctx.font = `${labelFontSize}px Roboto, sans-serif`;
         ctx.textAlign = 'center';
-        ctx.fillText(data.labels[i], x, height - padding + 15);
+        
+        // Truncate or rotate labels on small screens
+        const displayLabel = width < 400 && data.labels[i].length > 4 
+          ? data.labels[i].substring(0, 3) + '...' 
+          : data.labels[i];
+          
+        ctx.fillText(displayLabel, x, height - responsivePadding + 15);
       }
     } else {
       // Draw axes
       ctx.beginPath();
-      ctx.moveTo(padding, padding);
-      ctx.lineTo(padding, height - padding);
-      ctx.lineTo(width - padding, height - padding);
+      ctx.moveTo(responsivePadding, responsivePadding);
+      ctx.lineTo(responsivePadding, height - responsivePadding);
+      ctx.lineTo(width - responsivePadding, height - responsivePadding);
       ctx.strokeStyle = '#ccc';
       ctx.stroke();
       
       // Draw x-axis labels
       data.labels.forEach((label, index) => {
-        const x = padding + pointSpacing * index;
+        const x = responsivePadding + pointSpacing * index;
         
         ctx.fillStyle = '#666';
-        ctx.font = '10px Roboto, sans-serif';
+        ctx.font = `${labelFontSize}px Roboto, sans-serif`;
         ctx.textAlign = 'center';
-        ctx.fillText(label, x, height - padding + 15);
+        
+        // Truncate or rotate labels on small screens
+        const displayLabel = width < 400 && label.length > 4 
+          ? label.substring(0, 3) + '...' 
+          : label;
+          
+        ctx.fillText(displayLabel, x, height - responsivePadding + 15);
       });
     }
     
     // Draw line with animation if enabled
     const drawLine = (progress = 1) => {
-      // Draw line connecting points
       ctx.beginPath();
       
       data.values.forEach((value, index) => {
-        const x = padding + pointSpacing * index;
-        const y = height - padding - (value / maxValue) * chartHeight;
+        const x = responsivePadding + pointSpacing * index;
+        const y = height - responsivePadding - (value / maxValue) * chartHeight;
         
         if (index === 0) {
           ctx.moveTo(x, y);
@@ -329,26 +372,26 @@ export function useCanvasChart() {
       });
       
       ctx.strokeStyle = lineColor;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = lineWidth;
       ctx.stroke();
       
       // Draw points
       data.values.forEach((value, index) => {
         // For animation, only draw points up to the current progress
         if (index / (data.values.length - 1) <= progress) {
-          const x = padding + pointSpacing * index;
-          const y = height - padding - (value / maxValue) * chartHeight;
+          const x = responsivePadding + pointSpacing * index;
+          const y = height - responsivePadding - (value / maxValue) * chartHeight;
           
           ctx.beginPath();
-          ctx.arc(x, y, 5, 0, Math.PI * 2);
+          ctx.arc(x, y, pointRadius, 0, Math.PI * 2);
           ctx.fillStyle = pointColor;
           ctx.fill();
           
           // Draw value above point
           ctx.fillStyle = '#333';
-          ctx.font = '12px Roboto, sans-serif';
+          ctx.font = `${valueFontSize}px Roboto, sans-serif`;
           ctx.textAlign = 'center';
-          ctx.fillText(value, x, y - 10);
+          ctx.fillText(value, x, y - (pointRadius + 5));
         }
       });
     };
@@ -367,9 +410,9 @@ export function useCanvasChart() {
         // Redraw title
         if (title) {
           ctx.fillStyle = '#333';
-          ctx.font = '16px Roboto, sans-serif';
+          ctx.font = `${fontSize}px Roboto, sans-serif`;
           ctx.textAlign = 'center';
-          ctx.fillText(title, width / 2, padding / 2);
+          ctx.fillText(title, width / 2, responsivePadding / 2);
         }
         
         // Redraw grid or axes
@@ -378,55 +421,67 @@ export function useCanvasChart() {
           
           // Horizontal grid lines
           for (let i = 0; i <= gridCount; i++) {
-            const y = padding + (chartHeight / gridCount) * i;
+            const y = responsivePadding + (chartHeight / gridCount) * i;
             
             ctx.beginPath();
-            ctx.moveTo(padding, y);
-            ctx.lineTo(width - padding, y);
+            ctx.moveTo(responsivePadding, y);
+            ctx.lineTo(width - responsivePadding, y);
             ctx.strokeStyle = '#eee';
             ctx.stroke();
             
             // Draw y-axis labels
             const value = Math.round(maxValue - (maxValue / gridCount) * i);
             ctx.fillStyle = '#666';
-            ctx.font = '10px Roboto, sans-serif';
+            ctx.font = `${labelFontSize}px Roboto, sans-serif`;
             ctx.textAlign = 'right';
-            ctx.fillText(value, padding - 5, y + 3);
+            ctx.fillText(value, responsivePadding - 5, y + 3);
           }
           
           // Vertical grid lines
           for (let i = 0; i < data.labels.length; i++) {
-            const x = padding + pointSpacing * i;
+            const x = responsivePadding + pointSpacing * i;
             
             ctx.beginPath();
-            ctx.moveTo(x, padding);
-            ctx.lineTo(x, height - padding);
+            ctx.moveTo(x, responsivePadding);
+            ctx.lineTo(x, height - responsivePadding);
             ctx.strokeStyle = '#eee';
             ctx.stroke();
             
             // Draw x-axis labels
             ctx.fillStyle = '#666';
-            ctx.font = '10px Roboto, sans-serif';
+            ctx.font = `${labelFontSize}px Roboto, sans-serif`;
             ctx.textAlign = 'center';
-            ctx.fillText(data.labels[i], x, height - padding + 15);
+            
+            // Truncate labels on small screens
+            const displayLabel = width < 400 && data.labels[i].length > 4 
+              ? data.labels[i].substring(0, 3) + '...' 
+              : data.labels[i];
+              
+            ctx.fillText(displayLabel, x, height - responsivePadding + 15);
           }
         } else {
           // Draw axes
           ctx.beginPath();
-          ctx.moveTo(padding, padding);
-          ctx.lineTo(padding, height - padding);
-          ctx.lineTo(width - padding, height - padding);
+          ctx.moveTo(responsivePadding, responsivePadding);
+          ctx.lineTo(responsivePadding, height - responsivePadding);
+          ctx.lineTo(width - responsivePadding, height - responsivePadding);
           ctx.strokeStyle = '#ccc';
           ctx.stroke();
           
           // Draw x-axis labels
           data.labels.forEach((label, index) => {
-            const x = padding + pointSpacing * index;
+            const x = responsivePadding + pointSpacing * index;
             
             ctx.fillStyle = '#666';
-            ctx.font = '10px Roboto, sans-serif';
+            ctx.font = `${labelFontSize}px Roboto, sans-serif`;
             ctx.textAlign = 'center';
-            ctx.fillText(label, x, height - padding + 15);
+            
+            // Truncate labels on small screens
+            const displayLabel = width < 400 && label.length > 4 
+              ? label.substring(0, 3) + '...' 
+              : label;
+              
+            ctx.fillText(displayLabel, x, height - responsivePadding + 15);
           });
         }
         
