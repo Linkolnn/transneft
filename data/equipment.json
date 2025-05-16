@@ -1,0 +1,66 @@
+{
+  "equipment": [
+    {
+      "id": 1,
+      "name": "Насосное оборудование",
+      "total": 120,
+      "underRevision": 15,
+      "operational": 105,
+      "lastRevisionDate": "2025-04-10"
+    },
+    {
+      "id": 2,
+      "name": "Компрессорные установки",
+      "total": 85,
+      "underRevision": 8,
+      "operational": 77,
+      "lastRevisionDate": "2025-04-15"
+    },
+    {
+      "id": 3,
+      "name": "Трубопроводная арматура",
+      "total": 350,
+      "underRevision": 42,
+      "operational": 308,
+      "lastRevisionDate": "2025-04-20"
+    },
+    {
+      "id": 4,
+      "name": "Контрольно-измерительные приборы",
+      "total": 210,
+      "underRevision": 23,
+      "operational": 187,
+      "lastRevisionDate": "2025-04-25"
+    },
+    {
+      "id": 5,
+      "name": "Электрооборудование",
+      "total": 175,
+      "underRevision": 19,
+      "operational": 156,
+      "lastRevisionDate": "2025-05-01"
+    }
+  ],
+  "revisionHistory": [
+    {
+      "month": "Январь",
+      "completed": 28
+    },
+    {
+      "month": "Февраль",
+      "completed": 32
+    },
+    {
+      "month": "Март",
+      "completed": 45
+    },
+    {
+      "month": "Апрель",
+      "completed": 38
+    },
+    {
+      "month": "Май",
+      "completed": 20
+    }
+  ]
+}

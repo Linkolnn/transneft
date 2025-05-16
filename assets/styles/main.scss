@@ -1,0 +1,271 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family;
+  font-size: $font-size-base;
+  color: $text-color;
+  background-color: $background-color;
+  line-height: 1.6;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: $spacing-md;
+  font-weight: $font-weight-bold;
+  color: $primary-color;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: darken($primary-color, 10%);
+  }
+}
+
+button, .btn {
+  display: inline-block;
+  padding: $spacing-sm $spacing-lg;
+  background-color: $primary-color;
+  color: $light-color;
+  border: none;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  font-size: $font-size-base;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+
+  &:disabled {
+    background-color: $border-color;
+    cursor: not-allowed;
+  }
+
+  &.btn-secondary {
+    background-color: $secondary-color;
+
+    &:hover {
+      background-color: darken($secondary-color, 10%);
+    }
+  }
+
+  &.btn-success {
+    background-color: $success-color;
+
+    &:hover {
+      background-color: darken($success-color, 10%);
+    }
+  }
+}
+
+.card {
+  background-color: $light-color;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-sm;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+}
+
+.form-group {
+  margin-bottom: $spacing-md;
+
+  label {
+    display: block;
+    margin-bottom: $spacing-xs;
+    font-weight: $font-weight-bold;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: $spacing-sm;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-base;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+    }
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: $spacing-lg;
+
+  th, td {
+    padding: $spacing-sm;
+    text-align: left;
+    border-bottom: 1px solid $border-color;
+  }
+
+  th {
+    font-weight: $font-weight-bold;
+    background-color: lighten($primary-color, 50%);
+  }
+
+  tr:hover {
+    background-color: lighten($primary-color, 55%);
+  }
+}
+
+.alert {
+  padding: $spacing-md;
+  border-radius: $border-radius-sm;
+  margin-bottom: $spacing-md;
+
+  &.alert-success {
+    background-color: lighten($success-color, 40%);
+    color: darken($success-color, 10%);
+  }
+
+  &.alert-warning {
+    background-color: lighten($warning-color, 40%);
+    color: darken($warning-color, 10%);
+  }
+
+  &.alert-danger {
+    background-color: lighten($danger-color, 40%);
+    color: darken($danger-color, 10%);
+  }
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.gap-sm {
+  gap: $spacing-sm;
+}
+
+.gap-md {
+  gap: $spacing-md;
+}
+
+.gap-lg {
+  gap: $spacing-lg;
+}
+
+.mt-md {
+  margin-top: $spacing-md;
+}
+
+.mb-md {
+  margin-bottom: $spacing-md;
+}
+
+.chart-container {
+  width: 100%;
+  height: 400px;
+  margin-bottom: $spacing-lg;
+}
+
+// Layout styles
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: $primary-color;
+  color: $light-color;
+  padding: $spacing-lg;
+  transition: width $transition-normal;
+}
+
+.main-content {
+  flex: 1;
+  padding: $spacing-lg;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md 0;
+  margin-bottom: $spacing-lg;
+  border-bottom: 1px solid $border-color;
+}
+
+// Login page
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: $background-color;
+
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    padding: $spacing-xl;
+    background-color: $light-color;
+    border-radius: $border-radius-md;
+    box-shadow: $shadow-md;
+  }
+}
+
+// Responsive
+@media (max-width: $breakpoint-md) {
+  .sidebar {
+    width: 60px;
+    padding: $spacing-md;
+    
+    .sidebar-text {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .app-layout {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    padding: $spacing-sm;
+  }
+}
