@@ -202,12 +202,28 @@ onBeforeUnmount(() => {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
     gap: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    
+    @media (max-width: 767px) {
+      grid-template-columns: 1fr;
+    }
   }
 }
 
 .summary-card {
   display: flex;
   flex-direction: column;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: $spacing-lg;
+  
+  h3 {
+    color: $primary-color;
+    margin-top: 0;
+    margin-bottom: $spacing-md;
+    font-size: 1.2rem;
+  }
   
   .summary-content {
     flex: 1;
@@ -219,7 +235,7 @@ onBeforeUnmount(() => {
     justify-content: space-between;
     margin-bottom: $spacing-sm;
     padding-bottom: $spacing-sm;
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     
     &:last-child {
       border-bottom: none;
@@ -227,22 +243,59 @@ onBeforeUnmount(() => {
   }
   
   .summary-label {
-    font-weight: $font-weight-bold;
+    font-weight: 500;
+    color: $text-color;
   }
   
   .summary-value {
     font-size: $font-size-large;
     color: $primary-color;
+    font-weight: 600;
   }
 }
 
 .chart-card {
   min-height: 400px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: $spacing-lg;
+  
+  h3 {
+    color: $primary-color;
+    margin-top: 0;
+    margin-bottom: $spacing-md;
+    font-size: 1.2rem;
+  }
+  
+  .chart-container {
+    height: 350px;
+    
+    @media (max-width: 480px) {
+      height: 300px;
+    }
+  }
 }
 
 .btn-sm {
-  padding: $spacing-xs $spacing-md;
-  font-size: $font-size-small;
+  padding: 8px 16px;
+  font-size: 14px;
   align-self: flex-start;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-summary {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

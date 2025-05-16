@@ -120,26 +120,59 @@
         </div>
       </div>
       
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Наименование</th>
-            <th>Всего</th>
-            <th>На ревизии</th>
-            <th>В работе</th>
-            <th>Последняя ревизия</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in equipmentStore.allEquipment" :key="item.id">
-            <td>{{ item.name }}</td>
-            <td>{{ item.total }}</td>
-            <td>{{ item.underRevision }}</td>
-            <td>{{ item.operational }}</td>
-            <td>{{ formatDate(item.lastRevisionDate) }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Наименование</th>
+              <th>Всего</th>
+              <th>На ревизии</th>
+              <th>В работе</th>
+              <th>Последняя ревизия</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in equipmentStore.allEquipment" :key="item.id">
+              <td>{{ item.name }}</td>
+              <td>{{ item.total }}</td>
+              <td>{{ item.underRevision }}</td>
+              <td>{{ item.operational }}</td>
+              <td>{{ formatDate(item.lastRevisionDate) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Mobile equipment cards for smaller screens -->
+      <div class="equipment-cards">
+        <div v-for="item in equipmentStore.allEquipment" :key="item.id" class="equipment-card">
+          <div class="equipment-header">
+            <h4>{{ item.name }}</h4>
+          </div>
+          
+          <div class="equipment-details">
+            <div class="equipment-detail">
+              <span class="detail-label">Всего:</span>
+              <span class="detail-value">{{ item.total }}</span>
+            </div>
+            
+            <div class="equipment-detail">
+              <span class="detail-label">На ревизии:</span>
+              <span class="detail-value">{{ item.underRevision }}</span>
+            </div>
+            
+            <div class="equipment-detail">
+              <span class="detail-label">В работе:</span>
+              <span class="detail-value">{{ item.operational }}</span>
+            </div>
+            
+            <div class="equipment-detail">
+              <span class="detail-label">Последняя ревизия:</span>
+              <span class="detail-value">{{ formatDate(item.lastRevisionDate) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -314,6 +347,15 @@ onBeforeUnmount(() => {
   background-color: #f8f9fa;
   padding: $spacing-lg;
   border-radius: $border-radius-md;
+  
+  @media (max-width: 767px) {
+    padding: $spacing-md;
+    gap: $spacing-md;
+  }
+  
+  @media (max-width: 480px) {
+    padding: $spacing-sm;
+  }
 }
 
 .stats-grid {
@@ -321,6 +363,15 @@ onBeforeUnmount(() => {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: $spacing-lg;
   margin-top: $spacing-md;
+  
+  @media (max-width: 767px) {
+    gap: $spacing-md;
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+  }
 }
 
 .charts-container {
@@ -328,40 +379,88 @@ onBeforeUnmount(() => {
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: $spacing-lg;
   margin-bottom: $spacing-lg;
+  
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+    margin-bottom: $spacing-md;
+  }
 }
 
 .stat-item {
   text-align: center;
   padding: $spacing-md;
-  border-radius: $border-radius-lg;
+  border-radius: 20px;
   background-color: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
   
   .stat-value {
     font-size: 2rem;
-    font-weight: $font-weight-bold;
+    font-weight: 600;
     color: $primary-color;
     margin-bottom: $spacing-xs;
+    
+    @media (max-width: 767px) {
+      font-size: 1.75rem;
+    }
   }
   
   .stat-label {
     color: $text-color;
     font-size: $font-size-small;
   }
+  
+  @media (max-width: 767px) {
+    padding: $spacing-sm;
+  }
 }
 
 .chart-card {
   min-height: 400px;
   background-color: white;
-  border-radius: $border-radius-lg;
+  border-radius: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: $spacing-lg;
+  
+  h3 {
+    color: $primary-color;
+    margin-top: 0;
+    margin-bottom: $spacing-md;
+    font-size: 1.2rem;
+  }
+  
+  @media (max-width: 767px) {
+    min-height: 350px;
+    padding: $spacing-md;
+  }
+  
+  @media (max-width: 480px) {
+    min-height: 300px;
+  }
 }
 
 .card {
   background-color: white;
-  border-radius: $border-radius-lg;
+  border-radius: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   padding: $spacing-lg;
+  
+  h3 {
+    color: $primary-color;
+    margin-top: 0;
+    margin-bottom: $spacing-md;
+    font-size: 1.2rem;
+  }
+  
+  @media (max-width: 767px) {
+    padding: $spacing-md;
+  }
 }
 
 .table-header {
@@ -369,6 +468,16 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: $spacing-md;
+  
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-sm;
+    
+    button {
+      width: 100%;
+    }
+  }
 }
 
 .table {
@@ -376,7 +485,7 @@ onBeforeUnmount(() => {
   border-collapse: collapse;
   
   th, td {
-    padding: $spacing-md;
+    padding: 12px 16px;
     text-align: left;
     border-bottom: 1px solid #eee;
   }
@@ -389,18 +498,89 @@ onBeforeUnmount(() => {
   tr:hover {
     background-color: #f8f9fa;
   }
+  
+  @media (max-width: 767px) {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    
+    th, td {
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+  }
+}
+
+/* Mobile equipment cards for smaller screens */
+.equipment-cards {
+  display: none;
+  flex-direction: column;
+  gap: $spacing-md;
+  
+  @media (max-width: 480px) {
+    display: flex;
+  }
+}
+
+.equipment-card {
+  background-color: white;
+  border-radius: 20px;
+  padding: $spacing-md;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  
+  .equipment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-sm;
+    padding-bottom: $spacing-sm;
+    border-bottom: 1px solid #eee;
+    
+    h4 {
+      margin: 0;
+      color: $primary-color;
+      font-size: 1.1rem;
+    }
+  }
+  
+  .equipment-details {
+    margin-bottom: $spacing-sm;
+  }
+  
+  .equipment-detail {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    
+    .detail-label {
+      color: $text-color;
+      font-weight: 500;
+    }
+    
+    .detail-value {
+      color: $primary-color;
+      font-weight: 600;
+    }
+  }
 }
 
 .add-equipment-form {
   background-color: #f8f9fa;
   padding: $spacing-md;
-  border-radius: $border-radius-md;
+  border-radius: 20px;
   margin-bottom: $spacing-lg;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05) inset;
   
   h4 {
     margin-top: 0;
     margin-bottom: $spacing-md;
     color: $primary-color;
+    font-size: 1.1rem;
+  }
+  
+  @media (max-width: 767px) {
+    padding: $spacing-sm;
+    margin-bottom: $spacing-md;
   }
 }
 
@@ -408,6 +588,11 @@ onBeforeUnmount(() => {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: $spacing-md;
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: $spacing-sm;
+  }
 }
 
 .form-group {
@@ -419,19 +604,28 @@ onBeforeUnmount(() => {
     font-weight: 500;
     color: $text-color;
   }
+  
+  @media (max-width: 767px) {
+    margin-bottom: $spacing-sm;
+  }
 }
 
 .form-input {
   width: 100%;
-  padding: 10px 16px;
-  border-radius: 20px;
+  padding: 12px 16px;
+  border-radius: 30px;
   border: 1px solid #ddd;
   font-size: 14px;
+  transition: all 0.2s ease;
   
   &:focus {
     outline: none;
     border-color: $primary-color;
     box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+  }
+  
+  &::placeholder {
+    color: #aaa;
   }
 }
 
@@ -439,15 +633,25 @@ onBeforeUnmount(() => {
   display: flex;
   gap: $spacing-md;
   margin-top: $spacing-md;
+  
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
 }
 
 .btn-add, .btn-save, .btn-cancel {
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 10px 20px;
+  border-radius: 30px;
   border: none;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  
+  @media (max-width: 767px) {
+    padding: 8px 16px;
+  }
 }
 
 .btn-add {
@@ -456,6 +660,13 @@ onBeforeUnmount(() => {
   
   &:hover {
     background-color: darken($primary-color, 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -465,11 +676,20 @@ onBeforeUnmount(() => {
   
   &:hover {
     background-color: darken(#27ae60, 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
   &:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 }
 
@@ -479,6 +699,37 @@ onBeforeUnmount(() => {
   
   &:hover {
     background-color: #e0e0e0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Hide table on mobile and show cards instead */
+@media (max-width: 480px) {
+  .table {
+    display: none;
+  }
+  
+  .equipment-cards {
+    display: flex;
+  }
+}
+
+/* Chart container responsive adjustments */
+.chart-container {
+  height: 350px;
+  
+  @media (max-width: 767px) {
+    height: 300px;
+  }
+  
+  @media (max-width: 480px) {
+    height: 250px;
   }
 }
 </style>
